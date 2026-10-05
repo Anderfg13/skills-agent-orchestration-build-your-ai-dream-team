@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="eyebrow">Mona's team</p>
+    <h1>Project Pulse</h1>
+    <p class="tagline">See which projects are active, who owns them, and where attention is needed.</p>
+    <ul class="summary" id="summary" aria-label="Project summary"></ul>
+  </header>
+
+  <main>
+    <p id="message" class="message" role="status">Loading projects…</p>
+    <section class="dashboard" id="dashboard" aria-label="Projects"></section>
+  </main>
+
+  <script>
+    const dashboard = document.getElementById("dashboard");
+    const summary = document.getElementById("summary");
+    const message = document.getElementById("message");
+
+    function slug(value) {
+      return String(value || "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    }
+
+    function field(label, value) {
+      const row = document.createElement("div");
+      row.className = "field";
+      const dt = document.createElement("dt");
+      dt.textContent = label;
+      const dd = document.createElement("dd");
+      dd.textContent = value || "Not provided";
+      row.append(dt, dd);
+      return row;
+    }
+
+    function badge(kind, value) {
+      const el = document.createElement("span");
+      el.className = `badge badge-${kind} badge-${kind}-${slug(value)}`;
+      el.textContent = value || "Unknown";
+      return el;
+    }
+
+    function renderCard(project) {
+      const card = document.createElement("article");
+      card.className = "project-card";
+
+      const head = document.createElement("div");
+      head.className = "card-head";
+      const title = document.createElement("h2");
+      title.textContent = project.name || "Untitled project";
+      head.append(title, badge("status", project.status));
+
+      const details = document.createElement("dl");
+      details.append(
+        field("Owner", project.owner),
+        field("Recent activity", project.recentActivity)
+      );
+
+      const foot = document.createElement("div");
+      foot.className = "card-foot";
+      const label = document.createElement("span");
+      label.className = "priority-label";
+      label.textContent = "Priority";
+      foot.append(label, badge("priority", project.priority));
+
+      card.append(head, details, foot);
+      return card;
+    }
+
+    function renderSummary(projects) {
+      const counts = {};
+      projects.forEach((p) => { counts[p.status] = (counts[p.status] || 0) + 1; });
+      const items = [["Projects", projects.length], ...Object.entries(counts)];
+      items.forEach(([label, count]) => {
+        const li = document.createElement("li");
+        li.textContent = `${count} ${label}`;
+        summary.append(li);
+      });
+    }
+
+    fetch("project-data.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        if (!Array.isArray(data.projects) || data.projects.length === 0) {
+          throw new Error("project-data.json has no projects");
+        }
+        data.projects.forEach((project) => dashboard.append(renderCard(project)));
+        renderSummary(data.projects);
+        message.hidden = true;
+      })
+      .catch((error) => {
+        message.textContent = `Could not load projects: ${error.message}. Serve this folder over HTTP (see the Run Project Pulse Dashboard launch configuration).`;
+        message.classList.add("error");
+      });
+  </script>
+</body>
+</html>

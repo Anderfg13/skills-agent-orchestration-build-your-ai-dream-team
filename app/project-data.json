@@ -1,0 +1,39 @@
+{
+  "projects": [
+    {
+      "name": "Octocat Docs Portal",
+      "owner": "Mona Lisa",
+      "status": "On track",
+      "recentActivity": "Published the new onboarding guide and merged 12 community fixes this week.",
+      "priority": "Medium"
+    },
+    {
+      "name": "Hubot Automation Hub",
+      "owner": "Hubot",
+      "status": "At risk",
+      "recentActivity": "Nightly workflow failures traced to an expired token; rotation is in review.",
+      "priority": "High"
+    },
+    {
+      "name": "Contributor Welcome Kit",
+      "owner": "Octavia",
+      "status": "On track",
+      "recentActivity": "Drafted first-issue templates and a short video walkthrough.",
+      "priority": "Low"
+    },
+    {
+      "name": "Release Notes Generator",
+      "owner": "Ada Byte",
+      "status": "Blocked",
+      "recentActivity": "Waiting on API access approval before changelog automation can continue.",
+      "priority": "High"
+    },
+    {
+      "name": "Community Dashboard Metrics",
+      "owner": "Linus Branch",
+      "status": "Done",
+      "recentActivity": "Shipped contributor-growth charts and closed all launch issues.",
+      "priority": "Low"
+    }
+  ]
+}
